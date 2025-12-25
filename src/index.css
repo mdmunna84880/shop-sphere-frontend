@@ -1,0 +1,214 @@
+/** @format */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* ---------------------------------------------------------
+     BRAND & ACTION COLORS
+     Used for: Logos, Primary Buttons, Links, Highlights
+  --------------------------------------------------------- */
+  /* Main Brand Color (Trustworthy Deep Indigo) - Usage: Primary buttons, Active states, Links */
+  --color-brand-primary: #4338ca;
+  /* Brand Hover State - Usage: Hover state for primary buttons/links */
+  --color-brand-hover: #3730a3;
+  /* Conversion Color (Vibrant Coral) - Usage: "Add to Cart", Sale Badges, Call-to-Actions */
+  --color-brand-accent: #ea580c;
+  /* Accent Hover State - Usage: Hover state for conversion buttons */
+  --color-brand-accent-hover: #c2410c;
+
+  /* ---------------------------------------------------------
+     BACKGROUND SURFACES
+     Used for: Body, Cards, Headers, Footers, Modals
+  --------------------------------------------------------- */
+  /* Page Background - Usage: The main background of the <body> tag */
+  --color-bg-page: #f8fafc;
+  /* Surface/Card Background - Usage: Product cards, Sidebar, Modals, Dropdowns */
+  --color-bg-surface: #ffffff;
+  /* Secondary Surface - Usage: Subtle sections, alternating table rows, categories */
+  --color-bg-subtle: #f1f5f9;
+  /* Header Background - Usage: The main top navigation bar */
+  --color-bg-header: #ffffff;
+  /* Footer Background - Usage: The bottom footer section */
+  --color-bg-footer: #1e293b;
+
+  /* ---------------------------------------------------------
+     TYPOGRAPHY / TEXT
+     Used for: Headings, Paragraphs, Meta data, Inverted text
+  --------------------------------------------------------- */
+  /* Main Heading Text - Usage: h1, h2, h3, Product Titles, Strong emphasis */
+  --color-text-main: #0f172a;
+  /* Body Text - Usage: Product descriptions, paragraphs, standard readable text */
+  --color-text-body: #334155;
+  /* Muted/Meta Text - Usage: "Post date", "0 Reviews", Footer links, Breadcrumbs */
+  --color-text-muted: #64748b;
+  /* Inverse Text - Usage: Text on top of Primary Buttons or Dark Footer */
+  --color-text-inverse: #ffffff;
+
+  /* ---------------------------------------------------------
+     BORDERS & DIVIDERS
+     Used for: Inputs, Card Outlines, Separator lines
+  --------------------------------------------------------- */
+  /* Base Border - Usage: Card borders, input field borders (default state) */
+  --color-border-base: #e2e8f0;
+  /* Strong Border - Usage: Active inputs, checkbox borders, selected items */
+  --color-border-strong: #cbd5e1;
+  /* Focus Ring - Usage: Outline color when clicking an input or button (Accessibility) */
+  --color-ring-focus: #6366f1;
+
+  /* ---------------------------------------------------------
+     INTERACTIVE / STATES
+     Used for: Hover backgrounds, shadows
+  --------------------------------------------------------- */
+  /* Interactive Hover Background - Usage: Background when hovering over a menu item or list item */
+  --color-bg-interactive-hover: #f3f4f6;
+  /* Interactive Text Hover - Usage: Text color when hovering over a card or link */
+  --color-text-hover: #4338ca;
+  /* Shadow Color - Usage: For box-shadow utilities to create depth */
+  --color-shadow-base: rgb(15 23 42 / 0.08);
+
+  /* ---------------------------------------------------------
+     STATUS / FEEDBACK
+     Used for: Success messages, Error alerts, Warnings
+  --------------------------------------------------------- */
+  /* Success - Usage: "Item added to cart", "In Stock" */
+  --color-status-success: #16a34a;
+  /* Error/Alert - Usage: "Out of Stock", Form validation errors */
+  --color-status-error: #dc2626;
+  /* Warning - Usage: "Low Stock", "Pending" */
+  --color-status-warning: #d97706;
+  /* Info - Usage: "New Arrival" tags */
+  --color-status-info: #3b82f6;
+
+  /* ---------------------------------------------------------
+     FONTS
+  --------------------------------------------------------- */
+  --font-logo: "Poppins", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-heading: "Montserrat", sans-serif;
+}
+
+@layer base {
+  /* 1. Body Defaults */
+  body {
+    background-color: var(--color-bg-page);
+    color: var(--color-text-body);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased; 
+    line-height: 1.5; /* Improves readability for descriptions */
+  }
+
+  /* 2. Heading Defaults */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-text-main);
+    font-weight: 600; 
+    line-height: 1.2; /* Headings should be tighter */
+  }
+
+  /* 3. Link/Button Defaults */
+  a, button {
+    transition-property: color, background-color, border-color, opacity, transform;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  
+  /* CRITICAL ADDITION: Active state for better "click" feel */
+  button:active {
+    transform: scale(0.98);
+  }
+
+  /* 4. Focus Defaults */
+  :focus-visible {
+    outline: 2px solid var(--color-ring-focus);
+    outline-offset: 2px;
+  }
+
+  /* 5. CRITICAL ADDITION: Image Resets */
+  /* This prevents images from breaking your layout on mobile */
+  img, svg, video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* 6. Form Element Consistency */
+  /* Ensures inputs use your custom font, not the browser default */
+  input, textarea, select, button {
+    font-family: inherit;
+    font-feature-settings: inherit;
+  }
+
+  /* 7. Professional Polish: Selection Color */
+  /* Matches your brand color when users highlight text */
+  ::selection {
+    background-color: var(--color-brand-primary);
+    color: var(--color-text-inverse);
+  }
+}
+
+/* 
+1. Brand & Action Colors
+brand-primary: Use this for your main identity. It builds trust.
+
+Where to use: The "Login" button, active navigation tabs, links in text, and price tags.
+
+brand-accent: This is your "Money" color. It contrasts sharply with the primary color to draw the eye.
+
+
+Where to use: Only for high-priority actions like the "Add to Cart" button  or "Checkout" button. Do not overuse it, or it loses its power.
+
+2. Background Surfaces
+bg-page: This is slightly off-white (Slate-50).
+
+Where to use: Apply this to the main <div> wrapping your app. It prevents the harshness of pure white on large screens.
+
+bg-surface: Pure white.
+
+
+Where to use: Product Cards , the Wishlist container, and the Navbar. This creates a subtle "lift" effect against the bg-page.
+
+
+bg-footer: Dark Slate.
+
+
+Where to use: The Footer section. Dark footers anchor the page visually.
+
+3. Text Hierarchy
+text-main: Very dark blue-grey.
+
+
+Where to use: Product Names, Section Headers (e.g., "Featured Products"), and Prices.
+
+text-body: Medium grey.
+
+
+Where to use: Product descriptions, blog posts, and company info. It is softer on the eyes than pure black.
+
+text-muted: Light grey.
+
+
+Where to use: Review counts (e.g., "(0 Reviews)"), breadcrumbs ("Home > Shop"), and "Out of Stock" labels.
+
+4. Borders & Inputs
+border-base:
+
+
+Where to use: The outline of your Product Card, the lines between items in the Cart , and the border of the Search Bar.
+
+
+ring-focus:
+
+
+Where to use: When a user clicks the Search Bar or an Email Input, the outline should glow with this color.
+
+
+5. Interactive & Feedback
+bg-interactive-hover:
+
+Where to use: When a user hovers over a category in the dropdown or a product in the list, change the background to this light grey to indicate it's clickable.
+
+status-success vs status-error:
+
+Where to use: Use Success (Green) for "In Stock" text. Use Error (Red) for "Out of Stock" labels or form validation errors (e.g., "Password is required"). */
