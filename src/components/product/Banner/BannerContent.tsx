@@ -19,7 +19,6 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
         animate="visible"
         className="flex flex-col items-center md:items-start text-center md:text-left"
       >
-        {/* Tag */}
         <motion.span
           custom={0.1}
           variants={contentVariants}
@@ -28,7 +27,6 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
           {slide.tag}
         </motion.span>
 
-        {/* Title */}
         <motion.h1
           custom={0.2}
           variants={contentVariants}
@@ -37,7 +35,6 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
           {slide.title}
         </motion.h1>
 
-        {/* Subtitle */}
         <motion.p
           custom={0.3}
           variants={contentVariants}
@@ -46,7 +43,6 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
           {slide.subtitle}
         </motion.p>
 
-        {/* CTA Button */}
         <motion.div custom={0.4} variants={contentVariants}>
           <Link
             to={slide.link}

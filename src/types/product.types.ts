@@ -1,3 +1,5 @@
+import type { IconType } from "react-icons";
+
 export interface Rating {
   rate: number;
   count: number;
@@ -11,6 +13,12 @@ export interface Product {
   category: string;
   image: string;
   rating: Rating;
+}
+
+export interface FeatureItemProps {
+  icon: IconType;
+  title: string;
+  subtitle: string;
 }
 
 export type ProductCategory = string;
