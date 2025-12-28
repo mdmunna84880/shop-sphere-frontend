@@ -6,6 +6,7 @@ import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Login from "./pages/Login";
 import NotFound from "./NotFound";
+import SignUp from "./pages/SignUp";
 
 function App() {
   return ( 
@@ -18,6 +19,7 @@ function App() {
       <Route path="/wishlist" element={<Wishlist />} />
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/signup" element={<SignUp />} />
       </Route>
     </Routes>
     </BrowserRouter>

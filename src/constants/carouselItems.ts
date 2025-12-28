@@ -1,14 +1,6 @@
-export interface BannerSlide {
-  id: number;
-  image: string;
-  tag: string;
-  title: string;
-  subtitle: string;
-  cta: string;
-  link: string;
-}
+import type { CarouselItems } from "../types";
 
-export const bannerSlides: BannerSlide[] = [
+export const carouselItems: CarouselItems[] = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80",

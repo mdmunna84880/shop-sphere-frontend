@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { FiHome, FiAlertTriangle } from "react-icons/fi";
-import Container from "./components/common/Container";
+import Container from "./components/ui/Container";
 
 function NotFound() {
   return (

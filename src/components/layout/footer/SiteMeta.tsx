@@ -1,6 +1,6 @@
 import { paymentMethods } from "../../../constants/paymentMethod";
 import { socialLinks } from "../../../constants/socialLinks";
-import Container from "../../common/Container";
+import Container from "../../ui/Container";
 import SocialButton from "./SocialButton";
 
 function SiteMeta() {

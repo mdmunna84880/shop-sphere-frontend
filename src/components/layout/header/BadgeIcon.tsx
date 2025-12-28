@@ -1,30 +1,32 @@
-import type { IconType } from "react-icons";
+import {type IconType } from "react-icons";
 
 interface BadgeIconProps {
   icon: IconType;
-  title: string;
-  count?: number;
+  title?: string;
   className?: string;
+  count?: number;
 }
 
-function BadgeIcon({ icon: Icon, title, count = 0, className = "" }: BadgeIconProps){
-  const showBadge = ["Cart", "Wishlist"].includes(title);
-
+const BadgeIcon = ({ icon: Icon, title, className = "", count = 0 }: BadgeIconProps) => {
   return (
     <div className="relative inline-flex items-center justify-center">
-      <Icon className={className} size={20} />
+      {/* The main Icon */}
+      <Icon className={className} title={title} />
       
-      {showBadge && (
+      {/* The Notification Dot */}
+      {count > 0 && (
         <span className="
-          absolute -top-2 -right-1 
-          flex h-4 w-4 items-center justify-center 
-          rounded-md leading-none
-          bg-brand-accent 
-          text-[10px] font-bold text-text-inverse
-          shadow-sm 
-          ring-2 ring-bg-surface
+          absolute -top-2 -right-2 
+          flex items-center justify-center 
+          min-w-[18px] h-[18px] 
+          px-1
+          text-[10px] font-bold leading-none 
+          text-[var(--color-text-inverse)]
+          bg-[var(--color-brand-accent)] 
+          rounded-full 
+          shadow-sm ring-1 ring-white
         ">
-          {count}
+          {count > 99 ? '99+' : count}
         </span>
       )}
     </div>

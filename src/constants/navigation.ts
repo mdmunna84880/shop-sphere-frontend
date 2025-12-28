@@ -1,5 +1,5 @@
 // src/constants/navigation.ts
-import {BiCart, BiHeart, BiUser, BiBell } from "react-icons/bi";
+import {BiCart, BiHeart, BiBell } from "react-icons/bi";
 import { type IconType } from "react-icons";
 
 export interface Route {
@@ -23,10 +23,5 @@ export const routes: Route[] = [
     title: "Notifications",
     href: "#",
     Icon: BiBell,
-  },
-  {
-    title: "Login",
-    href: "/login",
-    Icon: BiUser,
-  },
+  }
 ];

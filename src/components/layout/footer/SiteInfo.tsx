@@ -1,6 +1,6 @@
 import { contactDetail, footerData } from "../../../constants/footerdata";
-import Container from "../../common/Container";
-import Logo from "../../common/Logo";
+import Container from "../../ui/Container";
+import Logo from "../../ui/Logo";
 import { Link } from "react-router";
 import { useState } from "react";
 import { FiMail, FiSend } from "react-icons/fi";

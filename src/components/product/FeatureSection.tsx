@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import Container from '../../components/common/Container'; 
+import Container from '../ui/Container'; 
 import { FEATURES } from '../../constants/featuresData';
 import FeatureCard from './FeaturedCard';
 

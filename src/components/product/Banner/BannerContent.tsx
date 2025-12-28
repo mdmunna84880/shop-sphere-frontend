@@ -2,10 +2,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router';
 import { FiArrowRight } from 'react-icons/fi';
 import { contentVariants } from '../../../constants/animations';
-import type { BannerSlide } from '../../../constants/bannerData';
+import type { CarouselItems } from '../../../types';
 
 interface Props {
-  slide: BannerSlide;
+  slide: CarouselItems;
   index: number;
   onInteract: () => void;
 }
@@ -19,22 +19,25 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
         animate="visible"
         className="flex flex-col items-center md:items-start text-center md:text-left"
       >
+        {/* Tag: Uses Brand Accent (Coral) for high visibility */}
         <motion.span
           custom={0.1}
           variants={contentVariants}
-          className="inline-block px-2.5 py-0.5 sm:px-3 sm:py-1 mb-2 sm:mb-4 text-[10px] sm:text-xs font-bold tracking-wider uppercase rounded-md bg-brand-accent text-text-inverse shadow-sm shadow-(--color-brand-accent)/20"
+          className="inline-block px-2.5 py-0.5 sm:px-3 sm:py-1 mb-2 sm:mb-4 text-[10px] sm:text-xs font-bold tracking-wider uppercase rounded-md bg-brand-accent text-text-inverse shadow-sm shadow-shadow-base"
         >
           {slide.tag}
         </motion.span>
 
+        {/* Heading: Uses Inverse Text (White) on dark background */}
         <motion.h1
           custom={0.2}
           variants={contentVariants}
-          className="font-font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-inverse leading-tight mb-2 sm:mb-4 drop-shadow-xl"
+          className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-text-inverse leading-tight mb-2 sm:mb-4 drop-shadow-xl"
         >
           {slide.title}
         </motion.h1>
 
+        {/* Subtitle: Inverse Text with opacity */}
         <motion.p
           custom={0.3}
           variants={contentVariants}
@@ -43,11 +46,27 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
           {slide.subtitle}
         </motion.p>
 
+        {/* CTA Button: Surface (White) bg with Primary Text */}
         <motion.div custom={0.4} variants={contentVariants}>
           <Link
             to={slide.link}
             onClick={onInteract}
-            className="group relative inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-3.5 font-bold rounded-xl overflow-hidden transition-all duration-300 shadow-lg shadow-shadow-base bg-color-text-inverse text-brand-primary hover:bg-brand-accent hover:text-(--color-text-inverse) hover:scale-105 active:scale-95 text-sm sm:text-base"
+            className="
+              group relative inline-flex items-center gap-2 sm:gap-3 
+              px-6 py-3 sm:px-8 sm:py-3.5 
+              font-bold rounded-xl overflow-hidden transition-all duration-300 
+              shadow-lg shadow-shadow-base 
+              
+              /* Default State */
+              bg-text-inverse 
+              text-brand-primary 
+              
+              /* Hover State: Uses Brand Accent (Coral) */
+              hover:bg-brand-accent 
+              hover:text-text-inverse 
+              hover:scale-105 active:scale-95 
+              text-sm sm:text-base
+            "
           >
             <span>{slide.cta}</span>
             <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />

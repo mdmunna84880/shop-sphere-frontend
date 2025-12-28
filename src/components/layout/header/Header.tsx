@@ -3,12 +3,12 @@ import { FiSearch } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useClickAway, useMedia } from "react-use";
 
-import Logo from "../../common/Logo";
+import Logo from "../../ui/Logo";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
 import HeaderSearchMobile from "./HeaderSearchMobile";
 import HeaderSearchDesktop from "./HeaderSearchDesktop";
-import Container from "../../common/Container";
+import Container from "../../ui/Container";
 
 function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
