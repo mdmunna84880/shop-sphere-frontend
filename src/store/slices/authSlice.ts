@@ -110,8 +110,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state) => {
         state.status = 'succeeded';
-        // Note: We do NOT set isAuthenticated = true here.
-        // Usually, APIs require you to log in to get a token after signing up.
+        // Note: We do NOT set isAuthenticated = true here., it is just simulation of signing up
       })
       .addCase(register.rejected, (state, action) => {
         state.status = 'failed';

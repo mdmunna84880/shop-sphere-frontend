@@ -1,33 +1,37 @@
-import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
-import { imageVariants, slideVariants } from '../../../constants/animations';
-import { BannerBackground } from './BannerBackground';
-import { BannerContent } from './BannerContent';
-import { BannerPagination } from './BannerPagination';
-import CarouselArrow from '../../ui/CarouselArrow';
-import { carouselItems } from '../../../constants/carouselItems'; 
-import { useBannerLogic } from '../../../hooks/useBannerLogic';
+import { motion, AnimatePresence, type PanInfo } from "framer-motion";
+
+import SliderButton from "@/components/common/SliderButton";
+
+// Local Sub-components
+import { BannerBackground } from "./BannerBackground";
+import { BannerContent } from "./BannerContent";
+import { BannerPagination } from "./BannerPagination";
+import { useBannerLogic } from "./useBannerLogic";
+import { slideVariants, imageVariants } from "./home-animation-variants";
+import { bannerItems } from "./BannerItems";
 
 const SWIPE_THRESHOLD = 10000;
 
 const Banner = () => {
+  // 1. Connect the Logic Hook
   const { 
     currentIndex, 
     direction, 
     paginate, 
     isPaused, 
     setIsPaused 
-  } = useBannerLogic(carouselItems.length);
+  } = useBannerLogic(bannerItems.length);
 
-  const slide = carouselItems[currentIndex];
+  const slide = bannerItems[currentIndex];
 
-  // 1. FIX: Updated Drag Logic (Removed handleManualInteraction)
+  // 2. Drag Interaction Logic
   const handleDragEnd = (
     _e: MouseEvent | TouchEvent | PointerEvent, 
     { offset, velocity }: PanInfo
   ) => {
     const swipe = Math.abs(offset.x) * velocity.x;
-    if (swipe < -SWIPE_THRESHOLD) paginate(1);       // Call paginate directly
-    else if (swipe > SWIPE_THRESHOLD) paginate(-1);  // Call paginate directly
+    if (swipe < -SWIPE_THRESHOLD) paginate(1);
+    else if (swipe > SWIPE_THRESHOLD) paginate(-1);
   };
 
   return (
@@ -41,18 +45,17 @@ const Banner = () => {
         font-body
         group
       "
-      // === PAUSE LOGIC EVENTS ===
+      // Pause on Interaction
       onMouseDown={() => setIsPaused(true)}
       onMouseUp={() => setIsPaused(false)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
-      
-      {/* Background Layer */}
+      {/* Layer 1: Background */}
       <BannerBackground image={slide.image} index={currentIndex} />
 
-      {/* Content Layer */}
+      {/* Layer 2: Content & Product Image */}
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div
           key={currentIndex}
@@ -65,19 +68,17 @@ const Banner = () => {
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={1}
           onDragEnd={handleDragEnd}
-          className="absolute inset-0 z-10 w-full h-full flex flex-col md:flex-row cursor-grab active:cursor-grabbing"
+          className="absolute inset-0 z-10 flex flex-col w-full h-full cursor-grab active:cursor-grabbing md:flex-row"
         >
           
           <BannerContent 
             slide={slide} 
             index={currentIndex} 
-            // 2. FIX: Removed setIsAutoPlaying. 
-            // We pass an empty function or simple pause because clicking a link navigates away anyway.
             onInteract={() => setIsPaused(true)} 
           />
 
-          {/* Product Image Section */}
-          <div className="w-full md:w-1/2 h-1/2 md:h-full relative order-1 md:order-2 flex items-center justify-center p-4 sm:p-6 md:p-8 md:pr-12 lg:pr-16">
+          {/* Product Image Wrapper */}
+          <div className="relative flex items-center justify-center order-1 w-full p-4 md:w-1/2 h-1/2 md:h-full sm:p-6 md:p-8 md:pr-12 lg:pr-16 md:order-2">
             <motion.img
               key={`img-${currentIndex}`}
               variants={imageVariants}
@@ -93,17 +94,15 @@ const Banner = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Controls */}
-      <CarouselArrow direction="prev" onClick={() => paginate(-1)} />
-      <CarouselArrow direction="next" onClick={() => paginate(1)} />
+      {/* Layer 3: Controls */}
+      <SliderButton direction="prev" onClick={() => paginate(-1)} />
+      <SliderButton direction="next" onClick={() => paginate(1)} />
 
       <BannerPagination 
-        count={carouselItems.length} 
+        count={bannerItems.length} 
         currentIndex={currentIndex} 
         isAutoPlaying={!isPaused} 
         isPaused={isPaused} 
-        // 3. FIX: Calculated the jump manually
-        // Since we removed jumpToSlide from the hook, we just calculate the difference here.
         onSelect={(index) => paginate(index - currentIndex)} 
       />
 

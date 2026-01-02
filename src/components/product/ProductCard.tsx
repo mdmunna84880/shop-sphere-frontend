@@ -1,230 +1,126 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FiShoppingCart, FiZap, FiHeart, FiStar, FiCheck} from 'react-icons/fi'; // Added Icons
-import { Link, useNavigate } from 'react-router'; // Import Link & useNavigate
-import { clsx } from 'clsx'; 
-import { twMerge } from 'tailwind-merge';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { cn } from "@/utils/cn";
 
-function cn(...inputs: (string | undefined | null | false)[]) {
-  return twMerge(clsx(inputs));
-}
+// Sub-components
+import { ProductBadge } from "./ProductBadge";
+import { ProductPrice } from "./ProductPrice";
+import { ProductRating } from "./ProductRating";
+import { ProductActions } from "./ProductActions";
 
-export interface Product {
-  id: number | string;
-  title: string;
-  category: string;
-  price: number;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  discount?: number;
-}
+// Types
+import type { Product } from "@/types/product.types";
+import WishlistButton from "./WishlistButton";
 
 interface ProductCardProps {
   product: Product;
-  isInCart?: boolean; // <--- NEW PROP
+  isInCart?: boolean;
   onAddToCart?: (id: number | string) => void;
   onToggleWishlist?: (id: number | string) => void;
+  isWishlistedInitial?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ 
-  product, 
-  isInCart = false, // Default to false
-  onAddToCart, 
-  onToggleWishlist 
-}) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
+export const ProductCard = ({
+  product,
+  isInCart = false,
+  onAddToCart,
+  onToggleWishlist,
+  isWishlistedInitial = false,
+}: ProductCardProps) => {
   const navigate = useNavigate();
+  const [isWishlisted, setIsWishlisted] = useState(isWishlistedInitial);
 
-  const discountPercent = product.discount || 20; 
-  const originalPrice = product.price / (1 - discountPercent / 100);
+  // Client-side discount logic (Default to 20% since API doesn't provide it)
+  const discountValue = 20;
 
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(product.price);
-
-  const formattedOriginalPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(originalPrice);
+  // --- Handlers ---
 
   const handleWishlist = (e: React.MouseEvent) => {
-    e.stopPropagation();
     e.preventDefault();
+    e.stopPropagation();
     setIsWishlisted(!isWishlisted);
     onToggleWishlist?.(product.id);
   };
 
-  // Function to handle "Buy Now" - Adds to cart then goes to checkout/cart
-  const handleBuyNow = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (!isInCart) {
-        onAddToCart?.(product.id);
-    }
-    navigate('/cart');
+  const handleBuyNow = () => {
+    navigate("/pay");
   };
 
+  const handleGoToCart = () => {
+    navigate("/cart");
+  };
+
+  const handleAddToCart = () => {
+    onAddToCart?.(product.id);
+  };
+
+  // --- Render ---
+
   return (
-    <div className="
-      group relative w-full max-w-[300px] 
-      bg-bg-surface 
-      rounded-xl border border-border-base 
-      shadow-sm shadow-shadow-base 
-      hover:shadow-lg hover:-translate-y-1
-      transition-all duration-300 
-      flex flex-col overflow-hidden
-    ">
-      
-      {/* --- Image Section (Clickable -> Details Page) --- */}
-      <Link to={`/product/${product.id}`} className="relative w-full aspect-[4/5] bg-bg-subtle p-4 overflow-hidden block">
-        
-        {/* Wishlist Icon */}
-        <button
-          onClick={handleWishlist}
-          className="
-            absolute top-3 right-3 z-10 p-2 rounded-full 
-            bg-bg-surface/80 backdrop-blur-sm 
-            text-text-muted 
-            hover:text-status-error hover:bg-bg-surface 
-            transition-colors shadow-sm
-          "
-        >
-          <FiHeart className={cn("w-5 h-5", isWishlisted && "fill-status-error text-status-error")} />
-        </button>
+    <div
+      className={cn(
+        "group relative w-full max-w-75",
+        "bg-bg-surface rounded-xl border border-border-base",
+        "shadow-sm shadow-shadow-base",
+        "hover:shadow-lg hover:-translate-y-1",
+        "transition-all duration-300",
+        "flex flex-col overflow-hidden"
+      )}
+    >
+      {/* 1. Image Section (Clickable) */}
+      <Link
+        to={`/product/${product.id}`}
+        className="relative block w-full overflow-hidden aspect-square bg-bg-subtle p-4"
+      >
+        {/* Discount Badge: Passing the local value */}
+        <ProductBadge discount={discountValue} />
 
-        {/* Discount Badge */}
-        <div className="
-          absolute top-3 left-3 z-10 
-          bg-status-success text-text-inverse 
-          text-[10px] font-bold px-2 py-1 
-          rounded-sm uppercase tracking-wide
-        ">
-          {discountPercent}% OFF
-        </div>
+        {/* Wishlist Button */}
+        <WishlistButton isWishlisted={isWishlisted} onToggleWishlist={handleWishlist} />
 
-        {/* Image */}
-        <div className="w-full h-full flex items-center justify-center">
-          <img 
-            src={product.image} 
-            alt={product.title} 
-            className="
-              w-full h-full object-contain mix-blend-multiply 
-              transition-transform duration-500 group-hover:scale-110
-            "
+        {/* Product Image */}
+        <div className="flex items-center justify-center w-full h-full">
+          <img
+            src={product.image}
+            alt={product.title}
+            loading="lazy"
+            className="object-contain w-full h-full transition-transform duration-500 mix-blend-multiply scale-95 group-hover:scale-100"
           />
         </div>
       </Link>
 
-      {/* --- Content Section --- */}
-      <div className="flex flex-col flex-grow p-4">
-        
-        <span className="text-xs text-text-muted font-medium uppercase tracking-wider mb-1">
+      {/* 2. Content Section */}
+      <div className="flex flex-col grow p-4">
+        <span className="mb-1 text-xs font-medium tracking-wider uppercase text-text-muted">
           {product.category}
         </span>
 
-        {/* Title (Clickable -> Details Page) */}
         <Link to={`/product/${product.id}`}>
-          <h3 
-            className="
-              text-sm font-medium text-text-main 
-              leading-snug line-clamp-2 mb-2 
-              group-hover:text-brand-primary transition-colors
-            "
+          <h3
+            className="mb-2 text-sm font-medium transition-colors leading-snug text-text-main line-clamp-2 group-hover:text-brand-primary"
             title={product.title}
           >
             {product.title}
           </h3>
         </Link>
 
-        {/* Rating Row */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="
-            flex items-center 
-            bg-status-success/10 text-status-success 
-            px-1.5 py-0.5 rounded text-xs font-bold
-          ">
-            {product.rating.rate} <FiStar className="w-3 h-3 ml-1 fill-current" />
-          </div>
-          <span className="text-xs text-text-muted font-medium">
-            ({product.rating.count.toLocaleString()} reviews)
-          </span>
-        </div>
+        <ProductRating 
+          rate={product.rating.rate} 
+          count={product.rating.count} 
+        />
 
-        {/* Price Row */}
-        <div className="mt-auto mb-4">
-          <div className="flex items-baseline gap-2">
-            <span className="text-xl font-bold text-text-main">
-              {formattedPrice}
-            </span>
-            <span className="text-sm text-text-muted line-through decoration-text-muted">
-              {formattedOriginalPrice}
-            </span>
-          </div>
-          <p className="text-xs text-status-success font-semibold mt-0.5">
-            Free Delivery by Tomorrow
-          </p>
-        </div>
+        {/* Price: Passing the local discount value to calculate original price */}
+        <ProductPrice 
+          price={product.price} 
+          discount={discountValue} 
+        />
 
-        {/* --- Buttons (Action Area) --- */}
-        <div className="grid grid-cols-2 gap-3 mt-auto">
-          
-          {/* Smart Cart Button: Toggles between "Cart" and "Go to Cart" */}
-          {isInCart ? (
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/cart')} // <--- Go to Cart
-              className="
-                flex items-center justify-center gap-2 px-3 py-2.5 
-                rounded-lg border border-status-success/20 
-                bg-status-success/10 text-status-success 
-                font-semibold text-sm 
-                hover:bg-status-success/20 transition-colors
-              "
-            >
-              <FiCheck className="w-4 h-4" />
-              Go to Cart
-            </motion.button>
-          ) : (
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddToCart?.(product.id);
-              }}
-              className="
-                flex items-center justify-center gap-2 px-3 py-2.5 
-                rounded-lg border border-brand-primary/20 
-                bg-bg-subtle text-brand-primary 
-                font-semibold text-sm 
-                hover:bg-brand-primary/5 transition-colors
-              "
-            >
-              <FiShoppingCart className="w-4 h-4" />
-              Cart
-            </motion.button>
-          )}
-
-          {/* Buy Now (Primary) */}
-          <motion.button 
-            whileTap={{ scale: 0.95 }}
-            onClick={handleBuyNow}
-            className="
-              flex items-center justify-center gap-2 px-3 py-2.5 
-              rounded-lg 
-              bg-brand-accent text-text-inverse 
-              font-semibold text-sm shadow-md shadow-brand-accent/20 
-              hover:bg-brand-accent-hover transition-colors
-            "
-          >
-            <FiZap className="w-4 h-4 fill-current" />
-            Buy Now
-          </motion.button>
-        </div>
-
+        <ProductActions
+          isInCart={isInCart}
+          onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
+          onGoToCart={handleGoToCart}
+        />
       </div>
     </div>
   );

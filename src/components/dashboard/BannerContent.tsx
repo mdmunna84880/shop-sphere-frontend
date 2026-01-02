@@ -1,16 +1,20 @@
-import { motion } from 'framer-motion';
-import { Link } from 'react-router';
-import { FiArrowRight } from 'react-icons/fi';
-import { contentVariants } from '../../../constants/animations';
-import type { CarouselItems } from '../../../types';
+import { motion } from "framer-motion";
+import { Link } from "react-router";
+import { FiArrowRight } from "react-icons/fi";
 
-interface Props {
-  slide: CarouselItems;
+
+// Ensure this type exists in your types folder. 
+// If it is named differently, please update this import.
+import type { BannerItem } from "./banner.types"; 
+import { contentVariants } from "./home-animation-variants";
+
+interface BannerContentProps {
+  slide: BannerItem;
   index: number;
   onInteract: () => void;
 }
 
-export const BannerContent = ({ slide, index, onInteract }: Props) => (
+export const BannerContent = ({ slide, index, onInteract }: BannerContentProps) => (
   <div className="w-full md:w-1/2 h-1/2 md:h-full flex items-center justify-center md:justify-start px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 relative order-2 md:order-1">
     <div className="max-w-xl w-full">
       <motion.div
@@ -19,7 +23,7 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
         animate="visible"
         className="flex flex-col items-center md:items-start text-center md:text-left"
       >
-        {/* Tag: Uses Brand Accent (Coral) for high visibility */}
+        {/* Tag: Uses Brand Accent (Coral) */}
         <motion.span
           custom={0.1}
           variants={contentVariants}
@@ -28,7 +32,7 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
           {slide.tag}
         </motion.span>
 
-        {/* Heading: Uses Inverse Text (White) on dark background */}
+        {/* Heading: Inverse Text (White) */}
         <motion.h1
           custom={0.2}
           variants={contentVariants}
@@ -46,7 +50,7 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
           {slide.subtitle}
         </motion.p>
 
-        {/* CTA Button: Surface (White) bg with Primary Text */}
+        {/* CTA Button */}
         <motion.div custom={0.4} variants={contentVariants}>
           <Link
             to={slide.link}
@@ -61,7 +65,7 @@ export const BannerContent = ({ slide, index, onInteract }: Props) => (
               bg-text-inverse 
               text-brand-primary 
               
-              /* Hover State: Uses Brand Accent (Coral) */
+              /* Hover State */
               hover:bg-brand-accent 
               hover:text-text-inverse 
               hover:scale-105 active:scale-95 

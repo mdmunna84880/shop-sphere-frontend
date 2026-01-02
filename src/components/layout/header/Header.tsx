@@ -1,88 +1,66 @@
-import { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { useClickAway, useMedia } from "react-use";
 
-import Logo from "../../ui/Logo";
+import { cn } from "@/utils/cn";
+import Container from "@/components/ui/Container";
+import Logo from "@/components/common/Logo";
+
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
 import HeaderSearchMobile from "./HeaderSearchMobile";
 import HeaderSearchDesktop from "./HeaderSearchDesktop";
-import Container from "../../ui/Container";
+import { SearchUIProvider, useSearchUI } from "./SearchUIContext";
 
-function Header() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const desktopInputRef = useRef<HTMLInputElement>(null);
-  const mobileInputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+/**
+ * Internal Header Content Component.
+ * Consumes the context to toggle UI elements.
+ */
+function HeaderContent() {
+  const { isSearchOpen, openSearch, isTabletOrDesktop } = useSearchUI();
 
-  const isTabletOrDesktop = useMedia("(min-width: 768px)", false);
-
-  useClickAway(containerRef, () => {
-    if (isTabletOrDesktop && isSearchOpen) setIsSearchOpen(false);
-  });
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  useEffect(() => {
-    if (isSearchOpen) {
-      setTimeout(() => {
-        if (isTabletOrDesktop) desktopInputRef.current?.focus();
-        else mobileInputRef.current?.focus();
-      }, 100);
-    }
-  }, [isSearchOpen, isTabletOrDesktop]);
+  // Helper to hide elements when search is active (mainly for mobile)
+  const hideOnSearchClass = cn(
+    "shrink-0 transition-opacity duration-200",
+    !isTabletOrDesktop && isSearchOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+  );
 
   return (
-    <header className="w-full h-20 bg-bg-surface shadow-sm px-6 fixed top-0 z-30 border-b border-border-base">
-      <Container className="relative flex items-center justify-between w-full h-full mx-auto gap-4">
-        {!isTabletOrDesktop && (
-          <HeaderSearchMobile
-            isOpen={isSearchOpen}
-            onClose={() => setIsSearchOpen(false)}
-            inputRef={mobileInputRef}
-          />
-        )}
-        <div
-          className={`shrink-0 transition-opacity duration-200 ${
-            !isTabletOrDesktop && isSearchOpen ? "opacity-0" : "opacity-100"
-          }`}
-        >
+    <header className="fixed top-0 z-30 w-full h-16 sm:h-20 border-b shadow-sm bg-bg-surface border-border-base">
+      <Container className="relative flex items-center justify-between h-full gap-4">
+        
+        {/* Mobile Search Overlay */}
+        {!isTabletOrDesktop && <HeaderSearchMobile />}
+
+        {/* Logo */}
+        <div className={hideOnSearchClass}>
           <Logo />
         </div>
-        <HeaderSearchDesktop
-          isOpen={isSearchOpen}
-          onClose={() => setIsSearchOpen(false)}
-          inputRef={desktopInputRef}
-          containerRef={containerRef}
-        />
 
-        <div
-          className={`flex items-center gap-1 md:gap-2 shrink-0 transition-opacity duration-200 ${
-            !isTabletOrDesktop && isSearchOpen ? "opacity-0" : "opacity-100"
-          }`}
-        >
+        {/* Desktop Search Bar */}
+        <HeaderSearchDesktop />
+
+        {/* Search Button when to open or when to not */}
+        <div className={cn("flex items-center gap-1 md:gap-2", hideOnSearchClass)}>
+          
+          {/* Search Trigger Button */}
           {!isSearchOpen && (
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              onClick={() => setIsSearchOpen(true)}
-              className="group flex items-center gap-2 px-4 py-3 rounded-lg font-body text-sm font-medium tracking-wide transition-all duration-300 ease-in-out relative text-text-body hover:text-text-hover hover:bg-bg-interactive-hover cursor-pointer"
-              aria-label="Open Search"
+              onClick={openSearch}
+              className={cn(
+                "group flex items-center gap-2 px-4 py-3 rounded-lg",
+                "font-body text-sm font-medium tracking-wide",
+                "text-text-body hover:text-text-hover hover:bg-bg-interactive-hover",
+                "transition-all duration-300 ease-in-out cursor-pointer"
+              )}
+              aria-label="Open Search (Ctrl+K)"
             >
               <FiSearch size={20} />
-              <span className="hidden xl:block text-md">Search</span>
+              <span className="hidden text-md xl:block">Search</span>
             </motion.button>
           )}
+
           <NavDesktop />
           <NavMobile />
         </div>
@@ -91,4 +69,14 @@ function Header() {
   );
 }
 
-export default Header;
+/**
+ * Main Header Component.
+ * Wraps the content in the SearchUIProvider to share state.
+ */
+export default function Header() {
+  return (
+    <SearchUIProvider>
+      <HeaderContent />
+    </SearchUIProvider>
+  );
+}

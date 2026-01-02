@@ -1,8 +1,10 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { FiTrash2, FiShoppingCart, FiCheck } from 'react-icons/fi';
-import { Link } from 'react-router'; // Updated to 'react-router'
-import type { Product } from '../../types';
+import { Link } from 'react-router';
+import { FiTrash2, FiShoppingCart, FiCheck } from 'react-icons/fi'; // Removed FiStar as it's in the component now
+import { cn } from '@/utils/cn';
+import type { Product } from '@/types/product.types';
+
+import { ProductRating } from '@/components/product/ProductRating';
 
 interface WishlistCardProps {
   product: Product;
@@ -11,33 +13,21 @@ interface WishlistCardProps {
   onRemove: (id: number) => void;
 }
 
-export const WishlistCard: React.FC<WishlistCardProps> = ({ 
-  product, 
-  isInCart, 
-  onMoveToCart, 
-  onRemove 
-}) => {
-  
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(product.price);
-
+export const WishlistCard = ({ product, isInCart, onMoveToCart, onRemove }: WishlistCardProps) => {
   return (
-    <motion.div 
+    <motion.div
       layout
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      className="
-        group relative flex flex-col sm:flex-row items-center gap-4 sm:gap-6 
-        bg-bg-surface p-4 rounded-xl 
-        border border-border-base shadow-sm shadow-shadow-base
-        transition-all duration-300 hover:shadow-md
-      "
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: -20, height: 0, marginBottom: 0 }}
+      transition={{ duration: 0.2 }}
+      className="group relative flex flex-col max-w-2xl sm:flex-row gap-4 sm:gap-6 p-4 bg-bg-surface border border-border-base rounded-xl shadow-sm hover:shadow-md transition-shadow"
     >
-      {/* 1. Image Thumbnail (Click to details) */}
-      <Link to={`/product/${product.id}`} className="shrink-0 relative w-full sm:w-32 h-32 bg-bg-subtle rounded-lg p-2 flex items-center justify-center overflow-hidden">
+      {/* 1. Image Section */}
+      <Link 
+        to={`/product/${product.id}`} 
+        className="w-full sm:w-32 h-32 sm:h-32 bg-bg-subtle rounded-lg p-4 flex items-center justify-center shrink-0"
+      >
         <img 
           src={product.image} 
           alt={product.title} 
@@ -45,73 +35,75 @@ export const WishlistCard: React.FC<WishlistCardProps> = ({
         />
       </Link>
 
-      {/* 2. Content Details */}
-      <div className="flex-1 w-full text-center sm:text-left flex flex-col justify-center">
-        <span className="text-xs text-text-muted font-bold uppercase tracking-wider mb-1">
-          {product.category}
-        </span>
-        
-        <Link to={`/product/${product.id}`}>
-          <h3 className="text-base sm:text-lg font-medium text-text-main line-clamp-2 hover:text-brand-primary transition-colors mb-1">
-            {product.title}
-          </h3>
-        </Link>
-        
-        <div className="flex items-center justify-center sm:justify-start gap-2 mb-3">
-          <span className="text-lg font-bold text-text-main">{formattedPrice}</span>
-          <span className="text-xs text-status-success font-medium bg-status-success/10 px-2 py-0.5 rounded-full">
-            In Stock
-          </span>
+      {/* 2. Content Section */}
+      <div className="flex-1 flex flex-col justify-between py-1">
+        <div>
+          <div className="flex justify-between items-start gap-2">
+            <div>
+              <p className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-1">
+                {product.category}
+              </p>
+              <Link to={`/product/${product.id}`}>
+                <h3 className="text-base sm:text-lg font-bold text-text-main leading-tight hover:text-brand-primary transition-colors line-clamp-1">
+                  {product.title}
+                </h3>
+              </Link>
+            </div>
+          </div>
+
+          {/* REUSED COMPONENT: ProductRating */}
+          <div className="mt-2">
+            <ProductRating 
+              rate={product.rating.rate} 
+              count={product.rating.count} 
+              className="mb-0"
+            />
+          </div>
+
+          <div className="mt-3">
+            <span className="text-xl font-bold text-text-main font-heading">
+              ${product.price.toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        {/* 3. Actions Row */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 mt-4 sm:mt-0">
+          
+          {/* Add to Cart Button */}
+          {isInCart ? (
+            <Link
+              to="/cart"
+              className={cn(
+                "w-full sm:w-auto flex-1 px-4 py-2.5 rounded-lg text-sm font-bold text-center",
+                "bg-status-success/10 text-status-success border border-status-success/20",
+                "hover:bg-status-success/20 transition-colors flex items-center justify-center gap-2"
+              )}
+            >
+              <FiCheck /> In Cart
+            </Link>
+          ) : (
+            <button
+              onClick={() => onMoveToCart(product)}
+              className={cn(
+                "w-full sm:w-auto flex-1 px-4 py-2.5 rounded-lg text-sm font-bold",
+                "bg-brand-primary text-text-inverse shadow-sm",
+                "hover:bg-brand-hover transition-all flex items-center justify-center gap-2"
+              )}
+            >
+              <FiShoppingCart /> Move to Cart
+            </button>
+          )}
+
+          {/* Remove Button */}
+          <button
+            onClick={() => onRemove(product.id)}
+            className="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-border-base text-text-muted hover:text-status-error hover:bg-status-error/5 hover:border-status-error/20 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+          >
+            <FiTrash2 /> <span className="sm:hidden">Remove</span>
+          </button>
         </div>
       </div>
-
-      {/* 3. Actions (Right Side) */}
-      <div className="flex flex-row sm:flex-col items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
-        
-        {/* ACTION 1: Add to Cart */}
-        {isInCart ? (
-           <Link 
-             to="/cart"
-             className="
-               flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-40
-               rounded-lg border border-status-success/30 bg-status-success/5 
-               text-status-success font-semibold text-sm
-               hover:bg-status-success/10 transition-colors
-             "
-           >
-             <FiCheck className="w-4 h-4" />
-             In Cart
-           </Link>
-        ) : (
-          <button
-            onClick={() => onMoveToCart(product)}
-            className="
-              flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-40
-              rounded-lg bg-brand-primary text-text-inverse 
-              font-semibold text-sm shadow-md shadow-brand-primary/20
-              hover:bg-brand-hover transition-colors
-            "
-          >
-            <FiShoppingCart className="w-4 h-4" />
-            Add to Cart
-          </button>
-        )}
-
-        {/* ACTION 2: Remove (Calls removeFromWishlist) */}
-        <button
-          onClick={() => onRemove(Number(product.id))}
-          className="
-            flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-40
-            rounded-lg border border-border-base bg-transparent 
-            text-text-muted font-medium text-sm
-            hover:border-status-error hover:text-status-error hover:bg-status-error/5 transition-all
-          "
-        >
-          <FiTrash2 className="w-4 h-4" />
-          Remove
-        </button>
-      </div>
-
     </motion.div>
   );
 };

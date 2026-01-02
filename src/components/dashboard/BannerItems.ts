@@ -1,6 +1,6 @@
-import type { CarouselItems } from "../types";
+import type { BannerItem } from "./banner.types";
 
-export const carouselItems: CarouselItems[] = [
+export const bannerItems: BannerItem[] = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=80",

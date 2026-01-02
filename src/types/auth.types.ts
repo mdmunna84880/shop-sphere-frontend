@@ -4,11 +4,8 @@ export interface LoginCredentials {
 }
 
 export interface SignUpCredentials {
+  id: number;
   email: string;
   username: string;
   password: string;
-  name: {
-    firstname: string;
-    lastname: string;
-  };
 }

@@ -1,24 +1,25 @@
 import { useRef } from "react";
 import { useClickAway } from "react-use";
 import { motion, AnimatePresence } from "framer-motion";
-import SearchInput from "./SearchInput";
 
-interface HeaderSearchMobileProps {
-  isOpen: boolean;
-  onClose: () => void;
-  inputRef: React.RefObject<HTMLInputElement | null>;
-}
+import GlobalSearch from "./GlobalSearch";
+import { useSearchUI } from "./SearchUIContext";
 
-const HeaderSearchMobile = ({ isOpen, onClose, inputRef }: HeaderSearchMobileProps) => {
+/**
+ * Mobile Search Wrapper.
+ * Overlays the entire header on mobile when active.
+ */
+const HeaderSearchMobile = () => {
+  const { isSearchOpen, closeSearch } = useSearchUI();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useClickAway(containerRef, () => {
-    onClose();
+    closeSearch();
   });
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isSearchOpen && (
         <motion.div
           ref={containerRef}
           initial={{ opacity: 0, scale: 0.98 }}
@@ -27,12 +28,10 @@ const HeaderSearchMobile = ({ isOpen, onClose, inputRef }: HeaderSearchMobilePro
           transition={{ duration: 0.2 }}
           className="absolute inset-0 z-40 flex items-center bg-bg-surface w-full h-full"
         >
-          <SearchInput
-            ref={inputRef}
-            onClear={onClose}
-            placeholder="Search products..."
-            className="text-base"
-            containerClassName="bg-bg-subtle shadow-inner w-full"
+          <GlobalSearch
+            autoFocus={true}
+            onClear={closeSearch}
+            className="text-base bg-bg-subtle shadow-inner w-full"
           />
         </motion.div>
       )}

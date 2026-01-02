@@ -1,59 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router';
-import { motion } from 'framer-motion';
 import { FiUser, FiLock, FiAlertCircle, FiCheckCircle, FiArrowRight } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 
-// Redux
-import { login, clearAuthError } from '../store/slices/authSlice';
-import type { AppDispatch, RootState } from '../store';
+// Shared Components
+import { AuthLayout } from '@/components/auth/AuthLayout';
+import { AuthHeader } from '@/components/auth/AuthHeader';
+import { AuthInput } from '@/components/auth/AuthInput';
 
-// Type for local validation errors
-interface ValidationErrors {
-  username?: string;
-  password?: string;
-}
+// Types & Redux
+import type { AppDispatch, RootState } from '@/store';
+import { login, clearAuthError } from '@/store/slices/authSlice';
+import { cn } from '@/utils/cn';
+import type { LoginCredentials } from '@/types';
 
-const Login: React.FC = () => {
+const INITIAL_ERRORS = {username: "", password: ""};
+const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  // Local Form State
+  // State
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  
-  // NEW: Validation State
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+  const [validationErrors, setValidationErrors] = useState<LoginCredentials>(INITIAL_ERRORS);
 
-  // Redux State
   const { status, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
   const isLoading = status === 'loading';
 
-  // 1. Redirect if already logged in
+  // Effects
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
+    if (isAuthenticated) navigate('/');
   }, [isAuthenticated, navigate]);
 
-  // 2. Clear Redux errors when unmounting
   useEffect(() => {
-    return () => {
-      dispatch(clearAuthError());
-    };
+    return () => { dispatch(clearAuthError()); };
   }, [dispatch]);
 
-  // NEW: Validation Logic
+  // Validation
   const validateForm = (): boolean => {
-    const errors: ValidationErrors = {};
+    const errors = {...INITIAL_ERRORS};
     let isValid = true;
 
     if (!username.trim()) {
       errors.username = "Username is required";
       isValid = false;
     }
-
     if (!password.trim()) {
       errors.password = "Password is required";
       isValid = false;
@@ -63,177 +55,111 @@ const Login: React.FC = () => {
     return isValid;
   };
 
+  // Handlers
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Run validation before dispatching
     if (!validateForm()) return;
-
     dispatch(login({ username, password }));
   };
 
-  const handleInputChange = (
-    setter: React.Dispatch<React.SetStateAction<string>>, 
-    field: keyof ValidationErrors,
-    value: string
-  ) => {
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>, field: keyof LoginCredentials, value: string) => {
     setter(value);
-    
-    // Clear specific validation error when user types
-    if (validationErrors[field]) {
-      setValidationErrors(prev => ({ ...prev, [field]: undefined }));
-    }
-    
-    // Clear global API error
+    if (validationErrors[field]) setValidationErrors(prev => ({ ...prev, [field]: undefined }));
     if (error) dispatch(clearAuthError());
   };
 
-  // Helper for Portfolio Reviewers
   const fillTestCredentials = () => {
     setUsername('mor_2314');
     setPassword('83r5^_');
-    setValidationErrors({}); // Clear validation errors
+    setValidationErrors(INITIAL_ERRORS);
     dispatch(clearAuthError());
   };
 
   return (
-    <div className="relative min-h-screen bg-bg-page flex items-center justify-center p-4 font-body top-20">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-bg-surface rounded-2xl shadow-xl shadow-shadow-base overflow-hidden border border-border-base"
-      >
-        {/* Header */}
-        <div className="bg-brand-primary/5 p-8 text-center border-b border-border-base">
-          <h1 className="text-2xl font-bold text-text-main font-heading">Welcome Back</h1>
-          <p className="text-text-muted mt-2 text-sm">Sign in to manage your cart and wishlist</p>
-        </div>
+    <AuthLayout>
+      <AuthHeader 
+        title="Welcome Back" 
+        subtitle="Sign in to manage your account" 
+      />
 
-        {/* Form */}
-        <div className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            
-            {/* API Error Message (Global) */}
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="bg-status-error/10 border border-status-error/20 text-status-error text-sm p-3 rounded-lg flex items-center gap-2"
-              >
-                <FiAlertCircle className="shrink-0" />
-                {error}
-              </motion.div>
-            )}
-
-            {/* Username Input */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-text-main">Username</label>
-              <div className="relative group">
-                <FiUser className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${validationErrors.username ? 'text-status-error' : 'text-text-muted group-focus-within:text-brand-primary'}`} />
-                <input 
-                  type="text" 
-                  value={username}
-                  onChange={(e) => handleInputChange(setUsername, 'username', e.target.value)}
-                  className={`
-                    w-full pl-10 pr-4 py-3 bg-bg-subtle rounded-xl focus:outline-none focus:ring-2 transition-all text-text-main
-                    ${validationErrors.username 
-                      ? "border border-status-error focus:ring-status-error/20" 
-                      : "border border-border-base focus:ring-brand-primary/20 focus:border-brand-primary"
-                    }
-                  `}
-                  placeholder="Enter your username"
-                />
-              </div>
-              {/* Validation Error Message */}
-              {validationErrors.username && (
-                <p className="text-xs text-status-error mt-1 ml-1">{validationErrors.username}</p>
-              )}
-            </div>
-
-            {/* Password Input */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-text-main">Password</label>
-              <div className="relative group">
-                <FiLock className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${validationErrors.password ? 'text-status-error' : 'text-text-muted group-focus-within:text-brand-primary'}`} />
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => handleInputChange(setPassword, 'password', e.target.value)}
-                  className={`
-                    w-full pl-10 pr-4 py-3 bg-bg-subtle rounded-xl focus:outline-none focus:ring-2 transition-all text-text-main
-                    ${validationErrors.password 
-                      ? "border border-status-error focus:ring-status-error/20" 
-                      : "border border-border-base focus:ring-brand-primary/20 focus:border-brand-primary"
-                    }
-                  `}
-                  placeholder="••••••••"
-                />
-              </div>
-              {/* Validation Error Message */}
-              {validationErrors.password && (
-                <p className="text-xs text-status-error mt-1 ml-1">{validationErrors.password}</p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`
-                w-full py-3.5 rounded-xl font-bold text-text-inverse shadow-lg transition-all
-                flex items-center justify-center gap-2
-                ${isLoading 
-                  ? "bg-text-muted cursor-wait opacity-70" 
-                  : "bg-brand-primary hover:bg-brand-hover hover:scale-[1.02] active:scale-[0.98] shadow-brand-primary/25"
-                }
-              `}
+      <div className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          
+          {/* Global API Error */}
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="flex items-center gap-2 p-2 text-xs border rounded-lg bg-status-error/10 border-status-error/20 text-status-error"
             >
-              {isLoading ? (
-                <>Processing...</>
-              ) : (
-                <>Sign In <FiArrowRight /></>
-              )}
-            </button>
-          </form>
+              <FiAlertCircle className="shrink-0" />
+              {error}
+            </motion.div>
+          )}
 
-          {/* Sign Up Link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-text-muted">
-              Don't have an account?{' '}
-              <Link 
-                to="/signup" 
-                className="font-bold text-brand-primary hover:text-brand-hover hover:underline transition-colors"
-              >
-                Create Account
-              </Link>
-            </p>
-          </div>
+          {/* Reusable Inputs */}
+          <AuthInput
+            label="Username"
+            icon={FiUser}
+            type="text"
+            placeholder="Enter username"
+            value={username}
+            onChange={(e) => handleInputChange(setUsername, 'username', e.target.value)}
+            error={validationErrors.username}
+          />
 
-          {/* Test Credentials Helper */}
-          <div className="mt-8 pt-6 border-t border-border-base">
-            <div className="bg-brand-accent/5 rounded-lg p-4 border border-brand-accent/10">
-              <div className="flex items-start gap-3">
-                <FiCheckCircle className="text-brand-accent mt-0.5 shrink-0" />
-                <div>
-                  <h4 className="text-sm font-bold text-text-main mb-1">Portfolio Demo Mode</h4>
-                  <p className="text-xs text-text-muted mb-3">
-                    Since this uses FakeStoreAPI, you must use specific test credentials.
-                  </p>
-                  <button 
-                    type="button"
-                    onClick={fillTestCredentials}
-                    className="text-xs font-bold text-brand-primary hover:underline"
-                  >
-                    Auto-fill Test User (mor_2314)
-                  </button>
-                </div>
+          <AuthInput
+            label="Password"
+            icon={FiLock}
+            type="password"
+            placeholder="......."
+            value={password}
+            onChange={(e) => handleInputChange(setPassword, 'password', e.target.value)}
+            error={validationErrors.password}
+          />
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={cn(
+              "w-full py-3 rounded-lg font-bold text-sm text-text-inverse shadow-md transition-all mt-2",
+              "flex items-center justify-center gap-2",
+              isLoading 
+                ? "bg-text-muted cursor-wait opacity-70" 
+                : "bg-brand-primary hover:bg-brand-hover hover:scale-[1.02] active:scale-[0.98] hover:translate-y-1 active:translate-0"
+            )}
+          >
+            {isLoading ? "Processing..." : <>Sign In <FiArrowRight className="w-4 h-4" /></>}
+          </button>
+        </form>
+
+        {/* Footer Links */}
+        <div className="mt-5 text-center">
+          <p className="text-xs text-text-muted">
+            No account?{' '}
+            <Link to="/signup" className="font-bold transition-colors text-brand-primary hover:text-brand-hover hover:underline">
+              Create one
+            </Link>
+          </p>
+        </div>
+
+        {/* Demo Helper */}
+        <div className="pt-4 mt-6 border-t border-border-base">
+          <div className="p-3 border rounded-lg bg-brand-accent/5 border-brand-accent/10">
+            <div className="flex items-start gap-2">
+              <FiCheckCircle className="text-brand-accent mt-0.5 shrink-0 w-4 h-4" />
+              <div>
+                <h4 className="mb-0.5 text-xs font-bold text-text-main">Demo Mode</h4>
+                <button type="button" onClick={fillTestCredentials} className="text-[10px] font-bold hover:underline text-brand-primary text-left">
+                  Tap to auto-fill (mor_2314)
+                </button>
               </div>
             </div>
           </div>
-
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </AuthLayout>
   );
 };
 

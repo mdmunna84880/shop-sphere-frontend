@@ -2,7 +2,7 @@ import { LuRocket } from "react-icons/lu";
 import type { FeatureItemProps } from "../types";
 import { FiInfo, FiLifeBuoy, FiRotateCcw } from "react-icons/fi";
 
-export const FEATURES: FeatureItemProps[] = [
+export const features: FeatureItemProps[] = [
   {
     icon: LuRocket,
     title: "Free Shipping",

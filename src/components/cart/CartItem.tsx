@@ -1,14 +1,16 @@
-import React from 'react';
+import {useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { FiTrash2, FiMinus, FiPlus } from 'react-icons/fi';
 import { Link } from 'react-router';
-import type { CartItem as CartItemType } from '../../store/slices/cartSlice';
+import { FiTrash2, FiMinus, FiPlus } from 'react-icons/fi';
+
+// Imports from aliases
 import { 
   removeFromCart, 
   decreaseCart, 
   increaseCart,
-  updateCartQuantity 
-} from '../../store/slices/cartSlice';
+  updateCartQuantity,
+  type CartItem as CartItemType 
+} from '@/store/slices/cartSlice';
 
 interface CartItemProps {
   item: CartItemType;
@@ -16,6 +18,20 @@ interface CartItemProps {
 
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const dispatch = useDispatch();
+
+  // 1. LOCAL STATE
+  const [inputValue, setInputValue] = useState(item.cartQuantity.toString());
+  
+  // 2. TRACK PREVIOUS PROP (To detect external changes)
+  const [lastQuantity, setLastQuantity] = useState(item.cartQuantity);
+
+  // 3. SYNC PATTERN (State from Props)
+  // If the Redux prop has changed (e.g., via + button), update local state immediately.
+  // This runs during render, preventing the "useEffect cascade" error.
+  if (item.cartQuantity !== lastQuantity) {
+    setLastQuantity(item.cartQuantity);
+    setInputValue(item.cartQuantity.toString());
+  }
 
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -27,11 +43,23 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
     currency: 'USD',
   }).format(item.price * item.cartQuantity);
 
-  // Handle manual input change (e.g., typing "10" directly)
   const handleQuantityInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseInt(e.target.value);
-    if (!isNaN(val) && val > 0) {
-      dispatch(updateCartQuantity({ id: Number(item.id), quantity: val }));
+    const val = e.target.value;
+
+    // Allow digits only or empty string
+    if (val === '' || /^[0-9\b]+$/.test(val)) {
+      setInputValue(val); // Update visual state
+
+      const numVal = parseInt(val);
+      if (!isNaN(numVal) && numVal > 0) {
+        dispatch(updateCartQuantity({ id: Number(item.id), quantity: numVal }));
+      }
+    }
+  };
+
+  const handleBlur = () => {
+    if (inputValue === "" || parseInt(inputValue) === 0) {
+      setInputValue(item.cartQuantity.toString());
     }
   };
 
@@ -39,16 +67,18 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
     <div className="flex flex-col sm:flex-row items-center gap-4 bg-bg-surface p-4 rounded-xl border border-border-base shadow-sm mb-4">
       
       {/* 1. Image & Title */}
-      <Link to={`/product/${item.id}`} className="flex items-center gap-4 flex-1 w-full sm:w-auto">
-        <div className="w-20 h-20 bg-bg-subtle rounded-lg p-2 flex-shrink-0">
+      <Link to={`/product/${item.id}`} className="flex items-center gap-4 flex-1 w-full sm:w-auto group">
+        <div className="w-20 h-20 bg-bg-subtle rounded-lg p-2 shrink-0">
           <img 
             src={item.image} 
             alt={item.title} 
-            className="w-full h-full object-contain mix-blend-multiply" 
+            className="w-full h-full object-contain mix-blend-multiply transition-transform group-hover:scale-105" 
           />
         </div>
         <div>
-          <h3 className="text-sm font-bold text-text-main line-clamp-1">{item.title}</h3>
+          <h3 className="text-sm font-bold text-text-main line-clamp-1 group-hover:text-brand-primary transition-colors">
+            {item.title}
+          </h3>
           <p className="text-xs text-text-muted uppercase font-bold mt-1">{item.category}</p>
           <p className="text-sm font-medium text-brand-primary mt-1">{formattedPrice}</p>
         </div>
@@ -56,25 +86,28 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
       {/* 2. Quantity Controls */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center border border-border-base rounded-lg overflow-hidden">
+        <div className="flex items-center border border-border-base rounded-lg overflow-hidden bg-bg-subtle/30">
           <button 
             onClick={() => dispatch(decreaseCart({ id: Number(item.id) }))}
             className="p-2 hover:bg-bg-subtle text-text-body transition-colors"
+            aria-label="Decrease quantity"
           >
             <FiMinus className="w-4 h-4" />
           </button>
           
           <input
-            type="number"
-            min="1"
-            value={item.cartQuantity}
+            type="text" 
+            inputMode="numeric"
+            value={inputValue}
             onChange={handleQuantityInput}
-            className="w-12 text-center text-sm font-medium text-text-main focus:outline-none"
+            onBlur={handleBlur}
+            className="w-12 text-center text-sm font-medium text-text-main bg-transparent focus:outline-none"
           />
 
           <button 
             onClick={() => dispatch(increaseCart({ id: Number(item.id) }))}
             className="p-2 hover:bg-bg-subtle text-text-body transition-colors"
+            aria-label="Increase quantity"
           >
             <FiPlus className="w-4 h-4" />
           </button>

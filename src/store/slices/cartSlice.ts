@@ -24,13 +24,14 @@ const loadCartFromStorage = (): CartItem[] => {
   }
 };
 
+// 3. Initialization of cart state
 const initialState: CartState = {
   cartItems: loadCartFromStorage(),
   cartTotalQuantity: 0,
   cartTotalAmount: 0,
 };
 
-// 3. Slice
+// 4. Cart slice
 const cartSlice = createSlice({
   name: 'cart',
   initialState,

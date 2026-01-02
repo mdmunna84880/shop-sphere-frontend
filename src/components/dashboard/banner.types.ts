@@ -1,4 +1,4 @@
-export interface CarouselItems {
+export interface BannerItem {
   id: number;
   image: string;
   tag: string;

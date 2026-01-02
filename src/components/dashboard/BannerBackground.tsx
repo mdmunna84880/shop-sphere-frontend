@@ -1,13 +1,13 @@
-/** @format */
-
 import { motion, AnimatePresence } from "framer-motion";
 
-interface Props {
+interface BannerBackgroundProps {
+  /** URL of the background image */
   image: string;
+  /** Current slide index (used to trigger transition) */
   index: number;
 }
 
-export const BannerBackground = ({ image, index }: Props) => (
+export const BannerBackground = ({ image, index }: BannerBackgroundProps) => (
   <AnimatePresence mode="popLayout">
     <motion.div
       // Changing the key triggers the AnimatePresence transition
@@ -24,8 +24,7 @@ export const BannerBackground = ({ image, index }: Props) => (
         style={{ backgroundImage: `url(${image})` }}
       />
 
-      {/* 2. Dark Overlay */}
-      {/* Provides contrast for the white text on top */}
+      {/* 2. Dark Overlay (Provides contrast for white text) */}
       <div className="absolute inset-0 bg-bg-footer/60" />
     </motion.div>
   </AnimatePresence>

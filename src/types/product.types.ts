@@ -20,5 +20,3 @@ export interface FeatureItemProps {
   title: string;
   subtitle: string;
 }
-
-export type ProductCategory = string;
