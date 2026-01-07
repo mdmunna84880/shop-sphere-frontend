@@ -11,8 +11,6 @@ import { itemVariants, menuVariants } from "./header-animation-variants";
 import type { RootState } from "@/store";
 import { logout } from "@/store/slices/authSlice";
 import { cn } from "@/utils/cn";
-
-// Shared Components
 import IconBadge from "@/components/common/IconBadge";
 
 function NavMobile() {
@@ -149,7 +147,7 @@ function NavMobile() {
                           {isActive && (
                             <motion.div
                               layoutId="activeStripMobile"
-                              className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-brand-primary rounded-r-full"
+                              className="absolute left-0 h-8 w-1 bg-brand-primary rounded-r-full"
                             />
                           )}
                           <IconBadge icon={FiUser} title="Login" iconClassName="text-[22px]" />

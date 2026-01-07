@@ -7,6 +7,7 @@ import { CartSummary } from '@/components/cart/CartSummary';
 import { CartEmpty } from '@/components/cart/CartEmpty';
 import type { RootState, AppDispatch } from '@/store';
 import { clearCart} from '@/store/slices/cartSlice';
+import Container from '@/components/ui/Container';
 
 function Cart(){
   const dispatch = useDispatch<AppDispatch>();
@@ -38,10 +39,10 @@ function Cart(){
   // --- Populated State ---
   return (
     <div className="min-h-screen py-8 bg-bg-page font-body mt-16 sm:mt-20">
-      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <Container>
         
         {/* Page Title */}
-        <h1 className="mb-8 text-2xl font-bold md:text-3xl text-text-main font-heading">
+        <h1 className="mb-8 text-2xl text-center font-bold md:text-3xl text-text-main font-heading">
           Shopping Cart 
           <span className="ml-3 text-base font-normal text-text-muted">
             ({cartTotalQuantity} items)
@@ -87,7 +88,7 @@ function Cart(){
           />
 
         </div>
-      </div>
+      </Container>
     </div>
   );
 };

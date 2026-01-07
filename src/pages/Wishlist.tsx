@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiTrash2 } from 'react-icons/fi';
@@ -15,7 +15,7 @@ import type { Product } from '@/types/product.types';
 import { addToCart } from '@/store/slices/cartSlice';
 import { removeFromWishlist, clearWishlist } from '@/store/slices/wishlistSlice';
 
-const Wishlist: React.FC = () => {
+const Wishlist = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 

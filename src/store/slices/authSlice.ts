@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isAxiosError } from 'axios';
-import { loginUser, registerUser } from '../../services/api';
-import type { LoginCredentials, SignUpCredentials } from '../../types';
+import { loginUser, registerUser } from '@/services/api';
+import type { LoginCredentials, SignUpCredentials } from '@/types';
 
 // 1. Define State
 interface AuthState {

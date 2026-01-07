@@ -9,7 +9,8 @@ import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
 import HeaderSearchMobile from "./HeaderSearchMobile";
 import HeaderSearchDesktop from "./HeaderSearchDesktop";
-import { SearchUIProvider, useSearchUI } from "./SearchUIContext";
+import { useSearchUI } from "./useSearchUI";
+import { SearchUIProvider } from "./SearchUIProvider";
 
 /**
  * Internal Header Content Component.

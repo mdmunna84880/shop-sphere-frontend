@@ -1,5 +1,6 @@
 import { FiShield } from 'react-icons/fi';
 import { cn } from '@/utils/cn';
+import { formatCurrencyToUS } from '@/utils/formateCurrency';
 
 interface CartSummaryProps {
   cartTotalAmount: number;
@@ -12,14 +13,6 @@ export const CartSummary = ({
   onCheckout, 
   className 
 }: CartSummaryProps) => {
-  
-  // Helper for consistent currency formatting
-  const formatPrice = (amount: number) => 
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-
   return (
     <div className={cn("lg:w-96", className)}>
       <div className="sticky p-6 border shadow-sm top-24 bg-bg-surface rounded-xl border-border-base">
@@ -32,7 +25,7 @@ export const CartSummary = ({
         <div className="mb-6 space-y-3">
           <div className="flex justify-between text-text-body">
             <span>Subtotal</span>
-            <span className="font-medium">{formatPrice(cartTotalAmount)}</span>
+            <span className="font-medium">{formatCurrencyToUS(cartTotalAmount)}</span>
           </div>
           <div className="flex justify-between text-text-body">
             <span>Shipping Estimate</span>
@@ -40,14 +33,14 @@ export const CartSummary = ({
           </div>
           <div className="flex justify-between text-text-body">
             <span>Tax Estimate</span>
-            <span className="font-medium">$0.00</span>
+            <span className="font-medium">{formatCurrencyToUS(0)}</span>
           </div>
         </div>
 
         {/* Total */}
         <div className="flex justify-between pt-4 mb-6 text-xl font-bold border-t text-text-main border-border-base">
           <span>Order Total</span>
-          <span>{formatPrice(cartTotalAmount)}</span>
+          <span>{formatCurrencyToUS(cartTotalAmount)}</span>
         </div>
 
         {/* Checkout Button */}

@@ -6,7 +6,7 @@ import SiteMeta from "./SiteMeta";
  * Assembles the Site Information (Links, Newsletter) and Meta Information (Copyright, Socials).
  * * Architecture Note:
  * This component is purely structural. It defines the outer wrapper (background, border)
- * and stacks the two main footer sections vertically.
+ * and stacks the three main footer sections vertically.
  */
 const Footer = () => {
   return (

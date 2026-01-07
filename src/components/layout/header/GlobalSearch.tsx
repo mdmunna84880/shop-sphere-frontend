@@ -101,10 +101,8 @@ export default function GlobalSearch({
       onChange={(e) => setSearchTerm(e.target.value)}
       onKeyDown={handleKeyDown}
       placeholder="Search products..."
-      
       startIcon={SearchIcon}
       endIcon={ActionButtons}
-      
       containerClassName={className}
     />
   );

@@ -4,8 +4,8 @@ import {
   fetchProductById, 
   fetchCategories, 
   fetchProductsByCategory 
-} from '../../services/api';
-import type { Product } from '../../types/product.types';
+} from '@/services/api';
+import type { Product } from '@/types/product.types';
 
 // 1. State Interface
 interface ProductState {

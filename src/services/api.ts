@@ -1,6 +1,6 @@
 import axios from 'axios';
-import type { Product } from "../types/product.types";
-import type { LoginCredentials, SignUpCredentials } from '../types';
+import type { Product } from "@/types/product.types";
+import type { LoginCredentials, SignUpCredentials } from '@/types';
 
 interface AuthResponse {
   token: string;

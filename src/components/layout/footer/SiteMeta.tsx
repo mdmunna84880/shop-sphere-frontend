@@ -8,7 +8,7 @@ function SiteMeta() {
 
   return (
     <div className="border-t border-border-base bg-bg-subtle/30">
-      <Container className="py-6 md:py-8 flex flex-col-reverse md:flex-row justify-between items-center gap-6 md:gap-4 px-8">
+      <Container className="py-6 md:py-8 flex flex-col-reverse md:flex-row justify-between items-center gap-6 md:gap-4">
         
         {/* Copyright Text */}
         <p className="text-xs text-text-muted text-center md:text-left w-full md:w-auto">

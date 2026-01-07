@@ -6,8 +6,6 @@ import { routes } from "@/constants/navigation";
 import { logout } from "@/store/slices/authSlice";
 import type { RootState } from "@/store";
 import { cn } from "@/utils/cn";
-
-// Shared Components
 import IconBadge from "@/components/common/IconBadge";
 
 function NavDesktop() {
@@ -16,7 +14,6 @@ function NavDesktop() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const cartCount = useSelector((state:RootState)=>state.cart.cartTotalQuantity);
-  console.log(cartCount);
   const wishlistCount = useSelector((state: RootState) => state.wishlist.items).length;
 
   // Base class for links to ensure consistency

@@ -1,11 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Product } from '../../types/product.types';
+import type { Product } from '@/types';
+import type { CartItem } from '@/types';
 
 // 1. Cart Item & State
-export interface CartItem extends Product {
-  cartQuantity: number;
-}
-
 interface CartState {
   cartItems: CartItem[];
   cartTotalQuantity: number;

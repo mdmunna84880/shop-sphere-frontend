@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router';
-import { FiTrash2, FiShoppingCart, FiCheck } from 'react-icons/fi'; // Removed FiStar as it's in the component now
+import { FiTrash2, FiShoppingCart, FiCheck } from 'react-icons/fi';
 import { cn } from '@/utils/cn';
 import type { Product } from '@/types/product.types';
 

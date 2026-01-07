@@ -17,7 +17,6 @@ function SiteInfo() {
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for subscription would go here in the future.
   };
 
   return (

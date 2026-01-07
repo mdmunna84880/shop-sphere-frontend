@@ -3,7 +3,7 @@ import { useClickAway } from "react-use";
 import { motion, AnimatePresence } from "framer-motion";
 
 import GlobalSearch from "./GlobalSearch";
-import { useSearchUI } from "./SearchUIContext";
+import { useSearchUI } from "./useSearchUI";
 
 /**
  * Mobile Search Wrapper.

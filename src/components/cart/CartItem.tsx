@@ -3,20 +3,19 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 import { FiTrash2, FiMinus, FiPlus } from 'react-icons/fi';
 
-// Imports from aliases
 import { 
   removeFromCart, 
   decreaseCart, 
   increaseCart,
-  updateCartQuantity,
-  type CartItem as CartItemType 
+  updateCartQuantity
 } from '@/store/slices/cartSlice';
-
+import { formatCurrencyToUS } from '@/utils/formateCurrency';
+import { type CartItem as CartItemType } from '@/types';
 interface CartItemProps {
   item: CartItemType;
 }
 
-export const CartItem: React.FC<CartItemProps> = ({ item }) => {
+export const CartItem = ({ item }:CartItemProps) => {
   const dispatch = useDispatch();
 
   // 1. LOCAL STATE
@@ -27,28 +26,17 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
   // 3. SYNC PATTERN (State from Props)
   // If the Redux prop has changed (e.g., via + button), update local state immediately.
-  // This runs during render, preventing the "useEffect cascade" error.
   if (item.cartQuantity !== lastQuantity) {
     setLastQuantity(item.cartQuantity);
     setInputValue(item.cartQuantity.toString());
   }
 
-  const formattedPrice = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(item.price);
-
-  const formattedSubtotal = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(item.price * item.cartQuantity);
-
   const handleQuantityInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
 
     // Allow digits only or empty string
-    if (val === '' || /^[0-9\b]+$/.test(val)) {
-      setInputValue(val); // Update visual state
+    if (val === '' || /^[0-9]+$/.test(val)) {
+      setInputValue(val);
 
       const numVal = parseInt(val);
       if (!isNaN(numVal) && numVal > 0) {
@@ -80,7 +68,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
             {item.title}
           </h3>
           <p className="text-xs text-text-muted uppercase font-bold mt-1">{item.category}</p>
-          <p className="text-sm font-medium text-brand-primary mt-1">{formattedPrice}</p>
+          <p className="text-sm font-medium text-brand-primary mt-1">{formatCurrencyToUS(item.price)}</p>
         </div>
       </Link>
 
@@ -118,7 +106,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
       <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-6">
         <div className="text-right">
           <p className="text-xs text-text-muted">Subtotal</p>
-          <p className="text-base font-bold text-text-main">{formattedSubtotal}</p>
+          <p className="text-base font-bold text-text-main">{formatCurrencyToUS(item.price * item.cartQuantity)}</p>
         </div>
         
         <button 
