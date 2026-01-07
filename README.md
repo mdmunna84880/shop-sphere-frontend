@@ -555,7 +555,7 @@ ShopSphere implements a complete set of e-commerce features with attention to **
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/shop-sphere-frontend.git
+git clone https://github.com/mdmunna84880/shop-sphere-frontend.git
 cd shop-sphere-frontend
 npm install
 ```
@@ -581,8 +581,7 @@ Password: 83r5^_
 
 No .env file is required.
 
-🔌 API Integration & Data Flow
-------------------------------
+### 🔌 API Integration & Data Flow
 
 * **API Provider**: FakeStore API
 
